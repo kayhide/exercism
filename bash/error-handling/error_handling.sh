@@ -3,7 +3,7 @@
 set -eu
 
 main() {
-    if [[ -z ${1+x} || -n ${2+x} ]]; then
+    if (( $# != 1 )); then
         echo "Usage: ./error_handling <greetee>"
         exit 1
     fi
