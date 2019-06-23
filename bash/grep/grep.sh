@@ -29,7 +29,7 @@ grep_file() {
 
     if $INVERT_MATCH; then
         test___() {
-            ! $(test__ "$@")
+            ! test__ "$@"
         }
     else
         test___() {
@@ -39,15 +39,15 @@ grep_file() {
 
 
     local i=0
-    while read line; do
+    while read -r line; do
         i=$(( i + 1 ))
-        if $(test___ "$line"); then
+        if test___ "$line"; then
             if $SHOW_ONLY_FILENAME; then
                 echo "$file"
                 break
             else
-                $SHOW_FILENAME && echo -n "$file:" || true
-                $SHOW_LINE_NUMBER && echo -n "$i:" || true
+                $SHOW_FILENAME && echo -n "$file:"
+                $SHOW_LINE_NUMBER && echo -n "$i:"
                 echo "$line"
             fi
         fi
@@ -60,34 +60,21 @@ main() {
     SHOW_ONLY_FILENAME=false
     MATCH_ENTIRE_LINE=false
     INVERT_MATCH=false
-    while [[ "${1:-}" == "-"* ]]; do
+    while [[ "$1" == "-"* ]]; do
         case "$1" in
-            -n )
-                SHOW_LINE_NUMBER=true
-                shift
-                ;;
-            -i )
-                IGNORE_CASE=true
-                shift
-                ;;
-            -l )
-                SHOW_ONLY_FILENAME=true
-                shift
-                ;;
-            -x )
-                MATCH_ENTIRE_LINE=true
-                shift
-                ;;
-            -v )
-                INVERT_MATCH=true
-                shift
-                ;;
+            -n ) SHOW_LINE_NUMBER=true ;;
+            -i ) IGNORE_CASE=true ;;
+            -l ) SHOW_ONLY_FILENAME=true ;;
+            -x ) MATCH_ENTIRE_LINE=true ;;
+            -v ) INVERT_MATCH=true ;;
             * )
                 echo "Unknown flag: $1"
                 exit 1
                 ;;
         esac
+        shift
     done
+
     local pattern="$1"
     shift
 
