@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-set -o errexit
-set -o nounset
+set -eu
 
 main() {
   echo "Hello, World!"
