@@ -1,0 +1,3 @@
+EXERCISE := grep
+
+include ../Makefile
