@@ -1,0 +1,3 @@
+EXERCISE := raindrops
+
+include ../Makefile

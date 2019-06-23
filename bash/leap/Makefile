@@ -1,0 +1,3 @@
+EXERCISE := leap
+
+include ../Makefile

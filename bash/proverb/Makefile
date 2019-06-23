@@ -1,0 +1,3 @@
+EXERCISE := proverb
+
+include ../Makefile
