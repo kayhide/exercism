@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 #include <string.h>
 #include "word_count.h"
 
@@ -22,11 +22,30 @@ bool insert(const char *text, word_count_word_t * words) {
 }
 
 
+char* strsep(char **buf, const char *delims) {
+  char *p = (char *)*buf;
+  if (*p == 0) {
+    return NULL;
+  }
+
+  while (*p != 0) {
+    if (strchr(delims, *p)) {
+      *p = 0;
+    } else {
+      ++p;
+    }
+  }
+  char *head = (char *)*buf;
+  *buf = p + 1;
+  return head;
+}
+
 int word_count(const char *input_text, word_count_word_t * words) {
   memset(words, 0, sizeof(word_count_word_t) * MAX_WORDS);
 
   {
-    char *buf = strdup(input_text);
+    char *buf = malloc(strlen(input_text));
+    strcpy(buf, input_text);
     char *token;
     while ((token = strsep(&buf, " ,.\n:!&@$%^")) != NULL) {
       int len = strlen(token);
