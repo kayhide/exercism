@@ -2,22 +2,15 @@
 
 set -eu
 
-main() {
-    local num=$1
-    is_divisible_by() {
-        (( num % $1 == 0 ))
-    }
+is_divisible() {
+    (( $1 % $2 == 0 ))
+}
 
+main() {
     local drops=""
-    if is_divisible_by 3; then
-        drops+="Pling"
-    fi
-    if is_divisible_by 5; then
-        drops+="Plang"
-    fi
-    if is_divisible_by 7; then
-        drops+="Plong"
-    fi
+    is_divisible "$1" 3 && drops+="Pling"
+    is_divisible "$1" 5 && drops+="Plang"
+    is_divisible "$1" 7 && drops+="Plong"
 
     echo "${drops:-$1}"
 }
