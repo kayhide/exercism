@@ -1,0 +1,3 @@
+EXERCISE := hamming
+
+include ../Makefile
