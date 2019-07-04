@@ -2,30 +2,29 @@
 
 set -eu
 
-reverse_echo() {
-    local res=()
-    for x in "$@"; do
-        res=("$x" "${res[@]}")
-    done
-    echo "${res[*]}"
-}
-
 main() {
     local actions=("wink" "double blink" "close your eyes" "jump")
     local n=${#actions[@]}
 
     local val=$1
+    local res=()
+
+    if (( 1 << n & val )); then
+        push() {
+            res=("${actions[$1]}" "${res[@]}")
+        }
+    else
+        push() {
+            res+=("${actions[$1]}")
+        }
+    fi
+
     for (( i=0; i < n; ++i )); do
-        (( val % 2 )) || unset -v "actions[$i]"
-        val=$(( val / 2 ))
+        (( 1 << i & val )) && push $i
     done
 
     IFS=","
-    if (( val % 2 )); then
-        reverse_echo "${actions[@]}"
-    else
-        echo "${actions[*]}"
-    fi
+    echo "${res[*]}"
 }
 
 main "$@"
