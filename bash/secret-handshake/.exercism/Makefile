@@ -1,0 +1,3 @@
+EXERCISE := ./.exercism
+
+include ../Makefile
