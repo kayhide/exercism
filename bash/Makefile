@@ -18,12 +18,13 @@ init: ${SRCS} ${MAKEFILES}
 
 # Exercise Commands
 
-TEST := bats ${EXERCISE}/$(subst -,_,${EXERCISE})_test.sh
+SRC := $(subst -,_,${EXERCISE}).sh
+TEST := $(subst -,_,${EXERCISE})_test.sh
 
 test:
-	${TEST}
+	bats ${TEST} && shellcheck ${SRC}
 .PHONY: test
 
 dev:
-	find . -name "*.sh" | entr -c ${TEST}
+	find . -name "*.sh" | entr -c bash -c "bats ${TEST} && shellcheck ${SRC}"
 .PHONY: dev
