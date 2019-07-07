@@ -19,24 +19,29 @@ is_sparing() {
     (( ${#CURRENT[@]} == 2 )) && (( CURRENT[0] + CURRENT[1] == 10 ))
 }
 
+die() {
+    echo "$@" >&2
+    exit 1
+}
+
 pack() {
     for x in "$@"; do
-        echo -n "$x"
+        (( x == 10 )) && echo -n x || echo -n "$x"
     done
     echo
 }
 
+unpack() {
+    for (( i = 0; i < ${#1}; ++i )); do
+        [[ "${1:i:1}" == "x" ]] && echo 10 || echo "${1:i:1}"
+    done
+}
+
+
 roll() {
-    if (( $1 < 0 )); then
-        echo "Negative roll is invalid"
-        exit 1
-    elif (( CURRENT[0] + $1 > 10 )); then
-        echo "Pin count exceeds pins on the lane"
-        exit 1
-    elif is_ended; then
-        echo "Cannot roll after game is over"
-        exit 1
-    fi
+    (( $1 < 0 )) && die "Negative roll is invalid"
+    (( CURRENT[0] + $1 > 10 )) && die "Pin count exceeds pins on the lane"
+    is_ended && die "Cannot roll after game is over"
 
     CURRENT+=( "$1" )
     if (( ${#FRAMES[@]} < 9 )); then
@@ -55,39 +60,23 @@ roll() {
         if is_striking || is_sparing; then
             CURRENT=()
         fi
-
         if is_ended; then
-            xs=""
-            for x in "${ENDING[@]}"; do
-                (( x == 10 )) && xs+="x" || xs+="$x"
-            done
-            FRAMES+=( "$xs" )
+            FRAMES+=( "$(pack "${ENDING[@]}")" )
         fi
     fi
 }
 
 score() {
+    ! is_ended && die "Score cannot be taken until the end of the game"
+
     >&3 echo "# ${FRAMES[*]}"
 
-    if ! is_ended; then
-        echo "Score cannot be taken until the end of the game"
-        exit 1
-    fi
-
-
     local sum=0
-    local doubling=()
+    local doubling=1            # Consumes lowest 2 bits for every adding.
 
     add() {
-        local i
-        sum=$(( sum + ${1/x/10} * ( 1 + ${#doubling[@]} ) ))
-        for (( i = 0; i < ${#doubling[@]}; ++i )); do
-            doubling[i]=$(( doubling[i] - 1 ))
-        done
-        for (( i = 0; i < ${#doubling[@]}; ++i )); do
-            (( doubling[i] == 0 )) && unset "doubling[i]"
-        done
-        doubling=( "${doubling[@]}" )
+        sum=$(( sum + $1 * ( doubling & 3 ) ))
+        doubling=$(( (doubling >> 2) + 1 ))
     }
 
 
@@ -95,17 +84,16 @@ score() {
         case $frame in
             "X" )
                 add 10
-                doubling+=( 2 )
+                doubling=$(( doubling + 5 )) # +1 for the current, +(1 << 2) for the next.
                 ;;
             *"/" )
                 add "${frame:0:1}"
                 add $(( 10 - "${frame:0:1}" ))
-                doubling+=( 1 )
+                doubling=$(( doubling + 1 ))
                 ;;
             * )
-                local i
-                for (( i = 0; i < ${#frame}; ++i )); do
-                    add "${frame:i:1}"
+                for n in $(unpack "$frame"); do
+                    add "$n"
                 done
                 ;;
         esac
@@ -116,9 +104,9 @@ score() {
 
 main() {
     for i in "$@"; do
-        roll "$i" || exit 1
+        roll "$i"
     done
-    score || exit 1
+    score
 }
 
 # Uncomment this to show debug outputs which are redirected to &3.
