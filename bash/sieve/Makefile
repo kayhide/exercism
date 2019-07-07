@@ -1,0 +1,3 @@
+EXERCISE := sieve
+
+include ../Makefile
