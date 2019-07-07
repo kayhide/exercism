@@ -1,0 +1,3 @@
+EXERCISE := bowling
+
+include ../Makefile
