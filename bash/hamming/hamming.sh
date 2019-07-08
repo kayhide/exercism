@@ -2,11 +2,14 @@
 
 set -eu
 
+die() {
+    echo "$@"
+    exit 1
+}
+
 main() {
-    if [[ -z "${1+x}" || -z "${1+x}" ]]; then
-        echo 'Usage: hamming.sh <string1> <string2>'
-        exit 1
-    fi
+    [[ -z "${1+x}" || -z "${2+x}" ]] &&
+        die 'Usage: hamming.sh <string1> <string2>'
 
     local x="$1"
     local y="$2"
@@ -18,10 +21,9 @@ main() {
         y="${y:1}"
     done
 
-    if [[ -n "$x" || -n "$y" ]]; then
-        echo 'left and right strands must be of equal length'
-        exit 1
-    fi
+    [[ -n "$x" || -n "$y" ]] &&
+        die 'left and right strands must be of equal length'
+
     echo $n
 }
 
