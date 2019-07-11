@@ -14,15 +14,15 @@ main() {
     local x="$1"
     local y="$2"
 
-    local n=0
-    while [[ -n "$x" && -n "$y" ]]; do
-        [[ "${x:0:1}" != "${y:0:1}" ]] && n=$(( n + 1 ))
-        x="${x:1}"
-        y="${y:1}"
-    done
-
-    [[ -n "$x" || -n "$y" ]] &&
+    local nx="${#x}"
+    local ny="${#y}"
+    (( nx != ny )) &&
         die 'left and right strands must be of equal length'
+
+    local n=0
+    for (( i = 0; i < nx; ++i )); do
+        [[ "${x:$i:1}" != "${y:$i:1}" ]] && n=$(( n + 1 ))
+    done
 
     echo $n
 }
