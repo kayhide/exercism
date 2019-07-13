@@ -1,0 +1,3 @@
+EXERCISE := acronym
+
+include ../Makefile
