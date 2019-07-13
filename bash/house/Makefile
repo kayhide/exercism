@@ -1,0 +1,3 @@
+EXERCISE := house
+
+include ../Makefile
