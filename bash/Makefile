@@ -26,5 +26,5 @@ test:
 .PHONY: test
 
 dev:
-	find . -name "*.sh" | entr -c bash -c "bats ${TEST} && shellcheck ${SRC}"
+	find . -name "*.sh" | entr -c bash -c "bats -t ${TEST} && shellcheck ${SRC}"
 .PHONY: dev
