@@ -15,19 +15,20 @@ main() {
     local n=${#1}
     local mod=$2
 
-    rot() {
-        if [[ $1 =~ [A-Z] ]]; then
-            local base=65
-        elif [[ $1 =~ [a-z] ]]; then
-            local base=97
-        fi
+    rot_with() {
+        local base=$1
+        local src=$(( $(ord "$2") - base ))
+        local dst=$(( (src + mod) % 26 ))
+        chr $(( dst + base ))
+    }
 
-        if [[ -z ${base+z} ]]; then
-            echo "$1"
+    rot() {
+        if [[ $1 =~ [a-z] ]]; then
+            rot_with "$(ord a)" "$1"
+        elif [[ $1 =~ [A-Z] ]]; then
+            rot_with "$(ord A)" "$1"
         else
-            local src=$(( $(ord "$1") - base ))
-            local dst=$(( (src + mod) % 26 ))
-            chr $(( dst + base ))
+            echo "$1"
         fi
     }
 
