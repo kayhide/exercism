@@ -2,30 +2,36 @@
 
 set -eu
 
-square_of_sum() {
-    local sum=0
-    for (( i = 1; i <= $1 ; ++i )); do
-        (( sum += i  ))
+fold() {
+    local acc="$2"
+    local x
+    for x in "${@:3}"; do
+        acc=$($1 "$acc" "$x")
     done
-    echo $(( sum ** 2 ))
+    echo "$acc"
+}
+
+square_of_sum() {
+    fn() {
+        echo $(( $1 + $2 ))
+    }
+    echo $(( $(fold fn 0 $(seq 1 "$1")) ** 2 ))
 }
 
 sum_of_squares() {
-    local sum=0
-    for (( i = 1; i <= $1 ; ++i )); do
-        (( sum += i ** 2 ))
-    done
-    echo $sum
+    fn() {
+        echo $(( $1 + $2 ** 2 ))
+    }
+    fold fn 0 $(seq 1 "$1")
 }
 
 difference() {
-    local x=0
-    local y=0
-    for (( i = 1; i <= $1 ; ++i )); do
-        (( x += i ))
-        (( y += i ** 2 ))
-    done
-    echo $(( x ** 2 - y ))
+    fn() {
+        read -r -a acc <<<"$1"
+        echo $(( acc[0] + $2 )) $(( acc[1] + $2 ** 2 ))
+    }
+    read -r -a acc < <(fold fn "0 0" $(seq 1 "$1"))
+    echo $(( acc[0] ** 2 - acc[1] ))
 }
 
 main() {
