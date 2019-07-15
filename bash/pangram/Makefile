@@ -1,0 +1,3 @@
+EXERCISE := pangram
+
+include ../Makefile
