@@ -6,12 +6,12 @@ set -eu
 # Here, I call the one "rightwise" and the other "leftwise".
 # When the pattern is "rightwise", it always transfers the content from the
 # bucket 1 to the 2, and never happens the other way.
-# After transfering, the next move should be one of refilling the emptied source
+# After transferring, the next move should be one of refilling the emptied source
 # or draining the filled destination.
 #
 # If there is no solution, it will end up with the both buckets saturated.
 #
-# I also calls the source bucket "primary" and the destination "secondary".
+# I also call the source bucket "primary" and the destination "secondary".
 
 die() {
     echo "$*"
