@@ -1,0 +1,3 @@
+EXERCISE := triangle
+
+include ../Makefile
