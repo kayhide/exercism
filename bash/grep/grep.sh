@@ -7,34 +7,22 @@ grep_file() {
     local file="$2"
 
     if $MATCH_ENTIRE_LINE; then
-        test_() {
-            [[ "$1" == "$pattern" ]]
-        }
+        test_() { [[ "$1" == "$pattern" ]]; }
     else
-        test_() {
-            [[ "$1" == *"$pattern"* ]]
-        }
+        test_() { [[ "$1" == *"$pattern"* ]]; }
     fi
 
     if $IGNORE_CASE; then
         pattern=${pattern,,}
-        test__() {
-            test_ "${@,,}"
-        }
+        test__() { test_ "${@,,}"; }
     else
-        test__() {
-            test_ "$@"
-        }
+        test__() { test_ "$@"; }
     fi
 
     if $INVERT_MATCH; then
-        test___() {
-            ! test__ "$@"
-        }
+        test___() { ! test__ "$@"; }
     else
-        test___() {
-            test__ "$@"
-        }
+        test___() { test__ "$@"; }
     fi
 
 
