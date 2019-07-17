@@ -10,14 +10,13 @@ main() {
     local -i bits=0
 
     while read -r -n1 char; do
-        char="${char,,}"
-        if [[ "$char" =~ [a-z] ]]; then
-            (( bits = bits | 1 << $(to_i "$char") )) || true
+        if [[ $char == [[:alpha:]] ]]; then
+            (( bits |= 1 << $(to_i "${char,,}") )) || true
         fi
     done <<< "$1"
 
     local -i full=$(( (1 << 26) - 1 ))
-    (( (bits & full) == full )) && echo true || echo false
+    (( bits == full )) && echo true || echo false
 }
 
 main "$@"
