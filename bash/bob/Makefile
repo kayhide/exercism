@@ -1,0 +1,3 @@
+EXERCISE := bob
+
+include ../Makefile
