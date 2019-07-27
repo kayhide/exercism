@@ -3,8 +3,7 @@
 set -eu
 
 main() {
-    local str="$1"
-    str=${str,,}
+    local -l str="$1"
     str=${str//[^[:alpha:]]}
     str=${str//[aeioulnrst]/_}  # 1
     str=${str//[dg]/__}         # 2
