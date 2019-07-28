@@ -1,0 +1,3 @@
+EXERCISE := grains
+
+include ../Makefile
