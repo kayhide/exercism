@@ -1,0 +1,3 @@
+EXERCISE := anagram
+
+include ../Makefile
