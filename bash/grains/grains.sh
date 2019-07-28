@@ -8,15 +8,13 @@ die() {
 }
 
 main() {
-    case $1 in
-        total )
-            printf "%u" $(( -1 ))
-            ;;
-        * )
-            (( $1 < 1 || 64 < $1 )) && die "Error: invalid input"
-            printf "%u" $(( 1 << ( $1 - 1 ) ))
-            ;;
-    esac
+    if [[ $1 == total ]]; then
+        printf "%u" $(( -1 ))
+    elif (( 0 < $1 && $1 <= 64 )); then
+        printf "%u" $(( 1 << ( $1 - 1 ) ))
+    else
+        die "Error: invalid input"
+    fi
     echo
 }
 
