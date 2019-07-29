@@ -1,0 +1,3 @@
+EXERCISE := luhn
+
+include ../Makefile
