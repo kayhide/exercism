@@ -11,7 +11,7 @@ main() {
     local xs="${1// }"
 
     (( "${#xs}" < 2 )) && die
-    [[ ! $xs =~ ^[[:digit:]]+$ ]] && die
+    [[ $xs == *[^[:digit:]]* ]] && die
 
     local n=${#xs}
     local -i sum=0
