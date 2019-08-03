@@ -14,7 +14,7 @@ code() {
     local -l src="$1"
     local -i n="${#src}"
     for (( i = 0; i < n; ++i )); do
-        is_spacing $i && echo -n " "
+        print_space $i
         local c="${src:i:1}"
         echo -n "${coder[$c]:-$c}"
     done
@@ -22,12 +22,16 @@ code() {
 }
 
 encode() {
-    is_spacing() { (( $1 > 0 && $1 % 5 == 0 )); }
+    print_space() {
+        if (( $1 > 0 && $1 % 5 == 0 )); then
+            echo -n " "
+        fi
+    }
     code "${1//[ ,\.]}"
 }
 
 decode() {
-    is_spacing() { false; }
+    print_space() { true; }
     code "${1// }"
 }
 
